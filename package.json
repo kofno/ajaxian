@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Ajax requests with better error handling",
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "author": "Ryan L. Bell <ryan.l.bell@gmail.com>",
   "license": "MIT",
   "scripts": {
@@ -22,7 +23,7 @@
     "ts-node": "^3.0.2",
     "tslint": "^5.1.0",
     "typedoc": "^0.5.10",
-    "typescript": "^2.2.2"
+    "typescript": "^2.3.2"
   },
   "dependencies": {
     "resulty": "^1.2.0",

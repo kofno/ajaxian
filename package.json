@@ -1,6 +1,6 @@
 {
   "name": "ajaxian",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "Ajax requests with better error handling",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

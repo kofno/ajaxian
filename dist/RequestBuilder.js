@@ -118,4 +118,19 @@ function post(url, data, decoder) {
     });
 }
 exports.post = post;
+/**
+ * A convenient function for creating a basic put request.
+ */
+function put(url, data, decoder) {
+    return new RequestBuilder({
+        url: url,
+        decoder: decoder,
+        data: data,
+        method: 'put',
+        timeout: 0,
+        headers: [],
+        withCredentials: true,
+    });
+}
+exports.put = put;
 //# sourceMappingURL=RequestBuilder.js.map

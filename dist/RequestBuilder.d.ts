@@ -35,3 +35,7 @@ export declare function getString(url: string): RequestBuilder<string>;
  * A convenient function for creating a basic post request.
  */
 export declare function post<A>(url: string, data: any, decoder: DecoderFn<A>): RequestBuilder<A>;
+/**
+ * A convenient function for creating a basic put request.
+ */
+export declare function put<A>(url: string, data: any, decoder: DecoderFn<A>): RequestBuilder<A>;

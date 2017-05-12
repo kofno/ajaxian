@@ -100,3 +100,18 @@ export function post<A>(url: string, data: any, decoder: DecoderFn<A>): RequestB
     withCredentials: true,
   });
 }
+
+/**
+ * A convenient function for creating a basic put request.
+ */
+export function put<A>(url: string, data: any, decoder: DecoderFn<A>): RequestBuilder<A> {
+  return new RequestBuilder({
+    url,
+    decoder,
+    data,
+    method: 'put',
+    timeout: 0,
+    headers: [],
+    withCredentials: true,
+  });
+}

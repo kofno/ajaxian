@@ -12,7 +12,7 @@ declare class RequestBuilder<A> {
     readonly method: Method;
     readonly data: any;
     readonly timeout: number;
-    readonly headers: string[][];
+    readonly headers: Array<[string, string]>;
     readonly withCredentials: boolean;
     readonly decoder: DecoderFn<A>;
     withData(data: any): RequestBuilder<A>;
@@ -25,17 +25,12 @@ export default RequestBuilder;
 /**
  * A convenient function for creating a basic get request.
  */
-export declare function get<A>(url: string, decoder: DecoderFn<A>): RequestBuilder<A>;
-/**
- * A convenient function for creating a basic get request and returning the
- * results as a string.
- */
-export declare function getString(url: string): RequestBuilder<string>;
+export declare function get(url: string): RequestBuilder<string>;
 /**
  * A convenient function for creating a basic post request.
  */
-export declare function post<A>(url: string, data: any, decoder: DecoderFn<A>): RequestBuilder<A>;
+export declare function post(url: string): RequestBuilder<string>;
 /**
  * A convenient function for creating a basic put request.
  */
-export declare function put<A>(url: string, data: any, decoder: DecoderFn<A>): RequestBuilder<A>;
+export declare function put(url: string): RequestBuilder<string>;

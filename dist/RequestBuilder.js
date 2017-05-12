@@ -75,10 +75,10 @@ exports.default = RequestBuilder;
 /**
  * A convenient function for creating a basic get request.
  */
-function get(url, decoder) {
+function get(url) {
     return new RequestBuilder({
         url: url,
-        decoder: decoder,
+        decoder: resulty_1.ok,
         method: 'get',
         timeout: 0,
         data: '',
@@ -88,29 +88,13 @@ function get(url, decoder) {
 }
 exports.get = get;
 /**
- * A convenient function for creating a basic get request and returning the
- * results as a string.
- */
-function getString(url) {
-    return new RequestBuilder({
-        url: url,
-        decoder: function (v) { return resulty_1.ok(v); },
-        method: 'get',
-        timeout: 0,
-        data: '',
-        headers: [],
-        withCredentials: true,
-    });
-}
-exports.getString = getString;
-/**
  * A convenient function for creating a basic post request.
  */
-function post(url, data, decoder) {
+function post(url) {
     return new RequestBuilder({
         url: url,
-        decoder: decoder,
-        data: data,
+        decoder: resulty_1.ok,
+        data: {},
         method: 'post',
         timeout: 0,
         headers: [],
@@ -121,11 +105,11 @@ exports.post = post;
 /**
  * A convenient function for creating a basic put request.
  */
-function put(url, data, decoder) {
+function put(url) {
     return new RequestBuilder({
         url: url,
-        decoder: decoder,
-        data: data,
+        decoder: resulty_1.ok,
+        data: {},
         method: 'put',
         timeout: 0,
         headers: [],

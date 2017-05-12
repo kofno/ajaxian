@@ -1,14 +1,14 @@
 import { err, ok } from 'resulty';
 import { toHttpTask } from './../src/Http';
 import { Method } from './../src/Request';
-import { getString } from './../src/RequestBuilder';
+import { get } from './../src/RequestBuilder';
 
 const aGetRequest = {
   method: 'get' as Method,
   url: 'http://localhost:9876',
   data: {},
   timeout: 0,
-  headers: [] as string[][],
+  headers: [] as Array<[string, string]>,
   withCredentials: false,
   decoder: () => ok({}),
 };
@@ -18,7 +18,7 @@ const aFailedGetRequest = {
   url: 'http://localhost:9876',
   data: {},
   timeout: 0,
-  headers: [] as string[][],
+  headers: [] as Array<[string, string]>,
   withCredentials: false,
   decoder: () => err('Bad mojo'),
 };
@@ -41,7 +41,7 @@ describe('toHttpTask', () => {
 
 describe('using the request builder', () => {
   it('can be ised in place of a request', done => {
-    toHttpTask(getString('/')).fork(
+    toHttpTask(get('/')).fork(
       err => done.fail(`Should have succeeded: ${JSON.stringify(err)}`),
       () => done(),
     );

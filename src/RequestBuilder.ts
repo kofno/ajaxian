@@ -23,7 +23,7 @@ class RequestBuilder<A> {
 
   get timeout(): number { return this.request.timeout; }
 
-  get headers(): string[][] { return this.request.headers; }
+  get headers(): Array<[string, string]> { return this.request.headers; }
 
   get withCredentials(): boolean { return this.request.withCredentials; }
 
@@ -58,26 +58,10 @@ export default RequestBuilder;
 /**
  * A convenient function for creating a basic get request.
  */
-export function get<A>(url: string, decoder: DecoderFn<A>): RequestBuilder<A> {
-  return new RequestBuilder({
-    url,
-    decoder,
-    method: 'get',
-    timeout: 0,
-    data: '',
-    headers: [],
-    withCredentials: true,
-  });
-}
-
-/**
- * A convenient function for creating a basic get request and returning the
- * results as a string.
- */
-export function getString(url: string): RequestBuilder<string> {
+export function get(url: string): RequestBuilder<string> {
   return new RequestBuilder<string>({
     url,
-    decoder: v => ok(v),
+    decoder: ok,
     method: 'get',
     timeout: 0,
     data: '',
@@ -89,11 +73,11 @@ export function getString(url: string): RequestBuilder<string> {
 /**
  * A convenient function for creating a basic post request.
  */
-export function post<A>(url: string, data: any, decoder: DecoderFn<A>): RequestBuilder<A> {
+export function post(url: string): RequestBuilder<string> {
   return new RequestBuilder({
     url,
-    decoder,
-    data,
+    decoder: ok,
+    data: {},
     method: 'post',
     timeout: 0,
     headers: [],
@@ -104,11 +88,11 @@ export function post<A>(url: string, data: any, decoder: DecoderFn<A>): RequestB
 /**
  * A convenient function for creating a basic put request.
  */
-export function put<A>(url: string, data: any, decoder: DecoderFn<A>): RequestBuilder<A> {
+export function put(url: string): RequestBuilder<string> {
   return new RequestBuilder({
     url,
-    decoder,
-    data,
+    decoder: ok,
+    data: {},
     method: 'put',
     timeout: 0,
     headers: [],

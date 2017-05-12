@@ -17,7 +17,7 @@ export interface Request<A> {
   method: Method;
   data: any;
   timeout: number;
-  headers: string[][];
+  headers: Array<[string, string]>;
   withCredentials: boolean;
   decoder: DecoderFn<A>;
 }

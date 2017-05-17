@@ -973,6 +973,14 @@ toHttpTask(request).fork(
 
 const request = post(<span class="hljs-string">'/some_end_point'</span>, { foo: bar }, <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> ok({}))
   .withHeader([<span class="hljs-string">'X-Some-Header'</span>, <span class="hljs-string">'baz'</span>]);
+</code></pre><p>It is also possible to abort an HTTP request before it completes. Forking the
+			HTTP task returns an abort function from the underlying HTTP request object:</p>
+			<pre><code><span class="hljs-keyword">const</span> cancel = toHttpTask(request).fork(
+  <span class="hljs-function"><span class="hljs-params">err</span> =&gt;</span> <span class="hljs-built_in">console</span>.error(err),
+  <span class="hljs-function"><span class="hljs-params">data</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Success!"</span>, data),
+);
+
+cancel() <span class="hljs-comment">// &lt;-- aborts request</span>
 </code></pre>
 		</div>
 		<div style="position:relative;"><a name="typedoc-main-index" class="tsd-anchor"></a></div>

@@ -74,6 +74,15 @@ There are some convenience builders for making requests, too:
     const request = post('/some_end_point', { foo: bar }, () => ok({}))
       .withHeader(['X-Some-Header', 'baz']);
 
+It is also possible to abort an HTTP request before it completes. Forking the
+HTTP task returns an abort function from the underlying HTTP request object:
+
+    const cancel = toHttpTask(request).fork(
+      err => console.error(err),
+      data => console.log("Success!", data),
+    );
+
+    cancel() // <-- aborts request
 
 
 

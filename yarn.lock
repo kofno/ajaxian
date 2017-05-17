@@ -2786,9 +2786,9 @@ tar@^2.2.1:
     fstream "^1.0.2"
     inherits "2"
 
-taskarian@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/taskarian/-/taskarian-1.0.0.tgz#b1ab8bba8e630d9efb3d284b44b366284b1f68c4"
+taskarian@^1.1.2:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/taskarian/-/taskarian-1.1.2.tgz#5417ed7bcbb694150dd7f210dbdc44434eb171d5"
 
 through2@2.0.1, through2@^2.0.0:
   version "2.0.1"

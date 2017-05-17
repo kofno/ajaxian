@@ -78,16 +78,27 @@ function ignore404With(f) {
     return function (err) {
         return new taskarian_1.default(function (reject, resolve) {
             switch (err.kind) {
-                case 'bad-url': return reject(err);
-                case 'timeout': return reject(err);
-                case 'network-error': return reject(err);
-                case 'bad-payload': return reject(err);
+                case 'bad-url':
+                    reject(err);
+                    break;
+                case 'timeout':
+                    reject(err);
+                    break;
+                case 'network-error':
+                    reject(err);
+                    break;
+                case 'bad-payload':
+                    reject(err);
+                    break;
                 case 'bad-status':
                     var response = err.response;
-                    return response.status === 404 ? resolve(f(err)) : reject(err);
+                    response.status === 404 ? resolve(f(err)) : reject(err);
+                    break;
                 default:
                     assertNever(err);
             }
+            // tslint:disable-next-line:no-empty
+            return function () { };
         });
     };
 }

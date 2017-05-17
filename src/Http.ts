@@ -54,7 +54,7 @@ function configureRequest<A>(xhr: XMLHttpRequest, request: Request<A>): void {
  * Converts a request object to an Http Task.
  */
 export function toHttpTask<A>(request: Request<A>): Task<HttpError, A> {
-  return new Task((reject: Reject<HttpError>, resolve) => {
+  return new Task((reject: Reject<HttpError>, resolve: Resolve<A>) => {
     const xhr = new XMLHttpRequest();
 
     xhr.addEventListener('error', () => reject(networkError()));
@@ -92,17 +92,28 @@ function assertNever(x: never): never {
  */
 export function ignore404With<A>(f: (e: HttpError) => A) {
   return (err: HttpError) =>
-    new Task((reject, resolve) => {
+    new Task((reject: Reject<HttpError>, resolve: Resolve<A>) => {
       switch (err.kind) {
-        case 'bad-url': return reject(err);
-        case 'timeout': return reject(err);
-        case 'network-error': return reject(err);
-        case 'bad-payload': return reject(err);
+        case 'bad-url':
+          reject(err);
+          break;
+        case 'timeout':
+          reject(err);
+          break;
+        case 'network-error':
+          reject(err);
+          break;
+        case 'bad-payload':
+          reject(err);
+          break;
         case 'bad-status':
           const response = err.response;
-          return response.status === 404 ? resolve(f(err)) : reject(err);
+          response.status === 404 ? resolve(f(err)) : reject(err);
+          break;
         default:
           assertNever(err);
       }
+      // tslint:disable-next-line:no-empty
+      return () => { };
     });
 }

@@ -27,6 +27,6 @@
   },
   "dependencies": {
     "resulty": "^1.2.0",
-    "taskarian": "^1.0.0"
+    "taskarian": "^1.1.2"
   }
 }

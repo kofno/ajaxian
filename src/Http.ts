@@ -45,7 +45,9 @@ function handleResponse<A>(xhr: XMLHttpRequest, decoder: DecoderFn<A>): Result<H
 
 function configureRequest<A>(xhr: XMLHttpRequest, request: Request<A>): void {
   xhr.setRequestHeader('Accept', 'application/json');
-  const setHeader = (header: [string, string]) => xhr.setRequestHeader(header[0], header[1]);
+  request.headers.forEach(([key, value]: [string, string]) => {
+    xhr.setRequestHeader(key, value);
+  });
   xhr.withCredentials = request.withCredentials;
   xhr.timeout = request.timeout || 0;
 }
@@ -114,6 +116,6 @@ export function ignore404With<A>(f: (e: HttpError) => A) {
           assertNever(err);
       }
       // tslint:disable-next-line:no-empty
-      return () => { };
+      return () => {};
     });
 }

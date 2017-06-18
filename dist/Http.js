@@ -34,7 +34,10 @@ function handleResponse(xhr, decoder) {
 }
 function configureRequest(xhr, request) {
     xhr.setRequestHeader('Accept', 'application/json');
-    var setHeader = function (header) { return xhr.setRequestHeader(header[0], header[1]); };
+    request.headers.forEach(function (_a) {
+        var key = _a[0], value = _a[1];
+        xhr.setRequestHeader(key, value);
+    });
     xhr.withCredentials = request.withCredentials;
     xhr.timeout = request.timeout || 0;
 }

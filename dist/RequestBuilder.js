@@ -20,37 +20,51 @@ var RequestBuilder = (function () {
         this.request = aRequest;
     }
     Object.defineProperty(RequestBuilder.prototype, "url", {
-        get: function () { return this.request.url; },
+        get: function () {
+            return this.request.url;
+        },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(RequestBuilder.prototype, "method", {
-        get: function () { return this.request.method; },
+        get: function () {
+            return this.request.method;
+        },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(RequestBuilder.prototype, "data", {
-        get: function () { return this.request.data; },
+        get: function () {
+            return this.request.data;
+        },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(RequestBuilder.prototype, "timeout", {
-        get: function () { return this.request.timeout; },
+        get: function () {
+            return this.request.timeout;
+        },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(RequestBuilder.prototype, "headers", {
-        get: function () { return this.request.headers; },
+        get: function () {
+            return this.request.headers;
+        },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(RequestBuilder.prototype, "withCredentials", {
-        get: function () { return this.request.withCredentials; },
+        get: function () {
+            return this.request.withCredentials;
+        },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(RequestBuilder.prototype, "decoder", {
-        get: function () { return this.request.decoder; },
+        get: function () {
+            return this.request.decoder;
+        },
         enumerable: true,
         configurable: true
     });
@@ -71,6 +85,7 @@ var RequestBuilder = (function () {
     };
     return RequestBuilder;
 }());
+exports.RequestBuilder = RequestBuilder;
 exports.default = RequestBuilder;
 /**
  * A convenient function for creating a basic get request.
@@ -117,4 +132,19 @@ function put(url) {
     });
 }
 exports.put = put;
+/**
+ * A convenient function for create a basic delete request.
+ */
+function del(url) {
+    return new RequestBuilder({
+        url: url,
+        decoder: resulty_1.ok,
+        data: {},
+        method: 'delete',
+        timeout: 0,
+        headers: [],
+        withCredentials: true,
+    });
+}
+exports.del = del;
 //# sourceMappingURL=RequestBuilder.js.map

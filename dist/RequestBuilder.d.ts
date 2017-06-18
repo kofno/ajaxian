@@ -5,7 +5,7 @@ import Request, { DecoderFn, Method } from './Request';
  * Modifications are immutable. A new instance of the RequestBuilder is
  * returned in each case.
  */
-declare class RequestBuilder<A> {
+export declare class RequestBuilder<A> {
     private readonly request;
     constructor(aRequest: Request<A>);
     readonly url: string;
@@ -34,3 +34,7 @@ export declare function post(url: string): RequestBuilder<string>;
  * A convenient function for creating a basic put request.
  */
 export declare function put(url: string): RequestBuilder<string>;
+/**
+ * A convenient function for create a basic delete request.
+ */
+export declare function del(url: string): RequestBuilder<string>;

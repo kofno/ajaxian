@@ -7,27 +7,40 @@ import Request, { DecoderFn, Method } from './Request';
  * Modifications are immutable. A new instance of the RequestBuilder is
  * returned in each case.
  */
-class RequestBuilder<A> {
-
+export class RequestBuilder<A> {
   private readonly request: Request<A>;
 
   constructor(aRequest: Request<A>) {
     this.request = aRequest;
   }
 
-  get url(): string { return this.request.url; }
+  get url(): string {
+    return this.request.url;
+  }
 
-  get method(): Method { return this.request.method; }
+  get method(): Method {
+    return this.request.method;
+  }
 
-  get data(): any { return this.request.data; }
+  get data(): any {
+    return this.request.data;
+  }
 
-  get timeout(): number { return this.request.timeout; }
+  get timeout(): number {
+    return this.request.timeout;
+  }
 
-  get headers(): Array<[string, string]> { return this.request.headers; }
+  get headers(): Array<[string, string]> {
+    return this.request.headers;
+  }
 
-  get withCredentials(): boolean { return this.request.withCredentials; }
+  get withCredentials(): boolean {
+    return this.request.withCredentials;
+  }
 
-  get decoder(): DecoderFn<A> { return this.request.decoder; }
+  get decoder(): DecoderFn<A> {
+    return this.request.decoder;
+  }
 
   public withData(data: any): RequestBuilder<A> {
     return new RequestBuilder({ ...this.request, data });
@@ -94,6 +107,21 @@ export function put(url: string): RequestBuilder<string> {
     decoder: ok,
     data: {},
     method: 'put',
+    timeout: 0,
+    headers: [],
+    withCredentials: true,
+  });
+}
+
+/**
+ * A convenient function for create a basic delete request.
+ */
+export function del(url: string): RequestBuilder<string> {
+  return new RequestBuilder({
+    url,
+    decoder: ok,
+    data: {},
+    method: 'delete',
     timeout: 0,
     headers: [],
     withCredentials: true,

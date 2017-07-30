@@ -8,7 +8,7 @@
   "license": "MIT",
   "scripts": {
     "docs": "typedoc --out docs --theme minimal && touch docs/.nojekyll",
-    "test": "karma start"
+    "test": "karma start --single-run --browsers Firefox"
   },
   "devDependencies": {
     "@types/jasmine": "^2.5.47",
@@ -16,6 +16,7 @@
     "jasmine": "^2.6.0",
     "karma": "^1.6.0",
     "karma-chrome-launcher": "^2.0.0",
+    "karma-firefox-launcher": "^1.0.1",
     "karma-jasmine": "^1.1.0",
     "karma-typescript": "^3.0.1",
     "tap-spec": "^4.1.1",

@@ -2,21 +2,24 @@
 
 [![Build Status](https://travis-ci.org/kofno/ajaxian.svg?branch=master)](https://travis-ci.org/kofno/ajaxian)
 
-Ajaxian is a small wrapper around the XMLHttpRequest object based heavily on
-the Elm Http module. In many ways it's not all that different from other http
-libraries. You build a request, send it to the server, and then handle the
-response. The emphasis here is on handling error reponses correctly and
-consistently, without resorting to exceptions.
+Ajaxian is a small wrapper around the XMLHttpRequest object. It borrows heavily
+from the Elm Http module. In many ways it's not all that different from other
+http libraries: build a request, send it to the server, and then handle the
+response. The emphasis here is on handling error responses correctly and
+consistently, without resorting to thrown exceptions.
 
-Because it uses XMLHttpRequest, Ajaxian can only be used from the browser.
-Browserify, Webpack, or some similar tool is required package for deploy.
+Because it uses XMLHttpRequest, Ajaxian can only be used from the browser (or
+a browser-like environment, like Electron). Browserify, Webpack, or some similar
+tool may be required when packaging for deploy.
 
 ## tasks
 
-Instead of Promises, Ajaxian uses Futures (here called Tasks). Tasks are lazy
-and will not execute until forked. This means a Task can be returned from a
-pure function. Tasks are also composable. You can build a complex chain of
-behaviors, while strictly controlling exactly when the side effects happen.
+Instead of Promises, Ajaxian uses Futures (here called Tasks, from the
+Taskarian library). Tasks are lazy and will not execute until forked. This
+means a Task can be returned from a pure function. Tasks are also composable.
+You can build a complex chain of behaviors, while strictly controlling exactly
+when the side effects happen. In this way I prefer them over Promises, which
+are stateful and initiate side effects as soon as they are instantiated.
 
 ## errors
 
@@ -54,6 +57,7 @@ built for creating composable decoders for handling json content.
     import { toHttpTask, Request } from 'ajaxian';
     import { ok } from 'resulty';
 
+    // Create a request object. This is a TS example.
     const request: Request<{}> = {
       url: '/some_end_point',
       method: 'post',

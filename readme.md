@@ -1,5 +1,7 @@
 # ajaxian
 
+[![Build Status](https://travis-ci.org/kofno/ajaxian.svg?branch=master)](https://travis-ci.org/kofno/ajaxian)
+
 Ajaxian is a small wrapper around the XMLHttpRequest object based heavily on
 the Elm Http module. In many ways it's not all that different from other http
 libraries. You build a request, send it to the server, and then handle the

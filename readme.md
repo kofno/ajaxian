@@ -49,10 +49,10 @@ built for creating composable decoders for handling json content.
 
 # usage
 
-    import { toHttpTask } from 'ajaxian';
+    import { toHttpTask, Request } from 'ajaxian';
     import { ok } from 'resulty';
 
-    const request = {
+    const request: Request<{}> = {
       url: '/some_end_point',
       method: 'post',
       data: { foo: 'bar' },
@@ -83,6 +83,3 @@ HTTP task returns an abort function from the underlying HTTP request object:
     );
 
     cancel() // <-- aborts request
-
-
-

@@ -1,6 +1,6 @@
 {
   "name": "ajaxian",
-  "version": "1.3.2",
+  "version": "0.0.0-development",
   "description": "Ajax requests with better error handling",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -9,7 +9,8 @@
   "scripts": {
     "docs": "typedoc --out docs --theme minimal && touch docs/.nojekyll",
     "test": "karma start --single-run --browsers Firefox",
-    "build": "tsc"
+    "build": "tsc",
+    "semantic-release": "semantic-release pre && npm publish && semantic-release post"
   },
   "devDependencies": {
     "@types/jasmine": "^2.5.47",
@@ -25,10 +26,15 @@
     "ts-node": "^3.0.2",
     "tslint": "^5.1.0",
     "typedoc": "^0.5.10",
-    "typescript": "^2.3.2"
+    "typescript": "^2.3.2",
+    "semantic-release": "^8.0.3"
   },
   "dependencies": {
     "resulty": "^1.2.0",
     "taskarian": "^1.1.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kofno/ajaxian.git"
   }
 }

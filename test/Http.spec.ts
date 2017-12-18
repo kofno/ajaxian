@@ -1,16 +1,16 @@
 import { err, ok } from 'resulty';
 import { toHttpTask } from './../src/Http';
-import { Method } from './../src/Request';
+import { Method, Request } from './../src/Request';
 import { get } from './../src/RequestBuilder';
 
-const aGetRequest = {
+const aGetRequest: Request<string> = {
   method: 'get' as Method,
   url: 'http://localhost:9876',
   data: {},
   timeout: 0,
   headers: [] as Array<[string, string]>,
   withCredentials: false,
-  decoder: () => ok({}),
+  decoder: () => ok('foo'),
 };
 
 const aFailedGetRequest = {
@@ -32,10 +32,7 @@ describe('toHttpTask', () => {
   });
 
   it('handle failed decoder errors', done => {
-    toHttpTask(aFailedGetRequest).fork(
-      err => done(),
-      () => done.fail('Should not have succeeded'),
-    );
+    toHttpTask(aFailedGetRequest).fork(err => done(), () => done.fail('Should not have succeeded'));
   });
 });
 

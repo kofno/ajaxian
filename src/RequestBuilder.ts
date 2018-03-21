@@ -1,5 +1,6 @@
 import { ok } from 'resulty';
 import Request, { DecoderFn, Method } from './Request';
+import { Header } from './Headers';
 
 /**
  * A different approach to building a request object. Instead of object
@@ -30,7 +31,7 @@ export class RequestBuilder<A> {
     return this.request.timeout;
   }
 
-  get headers(): Array<[string, string]> {
+  get headers(): Header[] {
     return this.request.headers;
   }
 
@@ -58,10 +59,10 @@ export class RequestBuilder<A> {
     return new RequestBuilder({ ...this.request, decoder });
   }
 
-  public withHeader(header: [string, string]): RequestBuilder<A> {
+  public withHeader(header: Header): RequestBuilder<A> {
     return new RequestBuilder({
       ...this.request,
-      headers: [...this.request.headers, header],
+      headers: [ ...this.request.headers, header ],
     });
   }
 }

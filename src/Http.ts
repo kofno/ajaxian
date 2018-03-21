@@ -1,7 +1,7 @@
 import { err, ok, Result } from 'resulty';
 import Task, { Reject, Resolve } from 'taskarian';
 import AjaxResponse from './AjaxResponse';
-import { parseHeaders } from './Headers';
+import { Header, parseHeaders, header } from './Headers';
 import {
   badPayload,
   BadStatus,
@@ -45,8 +45,8 @@ function handleResponse<A>(xhr: XMLHttpRequest, decoder: DecoderFn<A>): Result<H
 
 function configureRequest<A>(xhr: XMLHttpRequest, request: Request<A>): void {
   xhr.setRequestHeader('Accept', 'application/json');
-  request.headers.forEach(([key, value]: [string, string]) => {
-    xhr.setRequestHeader(key, value);
+  request.headers.forEach((header: Header) => {
+    xhr.setRequestHeader(header.field, header.value);
   });
   xhr.withCredentials = request.withCredentials;
   xhr.timeout = request.timeout || 0;

@@ -55,7 +55,7 @@ built for creating composable decoders for handling json content.
 
 # usage
 
-    import { toHttpTask, Request } from 'ajaxian';
+    import { toHttpTask, Request, header } from 'ajaxian';
     import { ok } from 'resulty';
 
     // Create a request object. This is a TS example.
@@ -64,7 +64,7 @@ built for creating composable decoders for handling json content.
       method: 'post',
       data: { foo: 'bar' },
       timeout: 0,
-      headers: [['X-Some-Header', 'baz']],
+      headers: [header('X-Some-Header', 'baz')],
       withCredentials: true,
       decoder: () => ok({}),
     };
@@ -79,7 +79,7 @@ There are some convenience builders for making requests, too:
     import { post } from 'ajaxian';
 
     const request = post('/some_end_point', { foo: bar }, () => ok({}))
-      .withHeader(['X-Some-Header', 'baz']);
+      .withHeader(header('X-Some-Header', 'baz'));
 
 It is also possible to abort an HTTP request before it completes. Forking the
 HTTP task returns an abort function from the underlying HTTP request object:

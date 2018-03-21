@@ -8,7 +8,7 @@ const aGetRequest: Request<string> = {
   url: 'http://localhost:9876',
   data: {},
   timeout: 0,
-  headers: [] as Array<[string, string]>,
+  headers: [],
   withCredentials: false,
   decoder: () => ok('foo'),
 };
@@ -18,7 +18,7 @@ const aFailedGetRequest = {
   url: 'http://localhost:9876',
   data: {},
   timeout: 0,
-  headers: [] as Array<[string, string]>,
+  headers: [],
   withCredentials: false,
   decoder: () => err('Bad mojo'),
 };

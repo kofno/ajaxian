@@ -1,8 +1,17 @@
+export interface Header {
+  field: string;
+  value: string;
+}
+
+export const header = (field: string, value: string): Header => ({
+  field,
+  value,
+});
 
 /**
  * Parse response headers into an array of tuples
  */
-export function parseHeaders(text: string): Array<[string, string]> {
-  const makeTuple = (l: string[]) => [l[0] || '', l[1] || ''] as [string, string];
-  return text.split('\r\n').map(s => s.split(':')).map(makeTuple);
+export function parseHeaders(text: string): Header[] {
+  const makeHeader = ([ field, value ]: string[]) => header(field, value);
+  return text.split('\r\n').map(s => s.split(':')).map(makeHeader);
 }

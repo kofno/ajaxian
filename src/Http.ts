@@ -1,18 +1,10 @@
 import { err, ok, Result } from 'resulty';
 import Task, { Reject, Resolve } from 'taskarian';
-import AjaxResponse from './AjaxResponse';
-import { Header, parseHeaders, header } from './Headers';
-import {
-  badPayload,
-  BadStatus,
-  badStatus,
-  BadUrl,
-  badUrl,
-  HttpError,
-  networkError,
-  timeout,
-} from './HttpError';
+import { Header, parseHeaders } from './Headers';
+import { badPayload, badStatus, badUrl, HttpError, networkError, timeout } from './HttpError';
 import { DecoderFn, Request } from './Request';
+import { httpSuccess, HttpSuccess } from './HttpSuccess';
+import AjaxResponse from './AjaxResponse';
 
 function send(xhr: XMLHttpRequest, data: any) {
   if (data) {
@@ -23,8 +15,11 @@ function send(xhr: XMLHttpRequest, data: any) {
   }
 }
 
-function handleResponse<A>(xhr: XMLHttpRequest, decoder: DecoderFn<A>): Result<HttpError, A> {
-  const response = {
+const handleResponse = <A>(
+  xhr: XMLHttpRequest,
+  decoder: DecoderFn<A>,
+): Result<HttpError, HttpSuccess<A>> => {
+  const response: AjaxResponse = {
     body: xhr.response,
     headers: parseHeaders(xhr.getAllResponseHeaders()),
     status: xhr.status,
@@ -37,11 +32,11 @@ function handleResponse<A>(xhr: XMLHttpRequest, decoder: DecoderFn<A>): Result<H
   } else {
     const result = decoder(response.body);
     return result.cata({
-      Err: error => err(badPayload(error, response)) as Result<HttpError, any>,
-      Ok: r => ok(r),
+      Err: error => err(badPayload(error, response)),
+      Ok: r => ok(httpSuccess(response, r)),
     });
   }
-}
+};
 
 function configureRequest<A>(xhr: XMLHttpRequest, request: Request<A>): void {
   xhr.setRequestHeader('Accept', 'application/json');
@@ -54,9 +49,14 @@ function configureRequest<A>(xhr: XMLHttpRequest, request: Request<A>): void {
 
 /*
  * Converts a request object to an Http Task.
+ *
+ * A successful request will result in an HttpSuccess object containing the result and also
+ * the full response details (headers, status, etc.)
+ *
+ * A failed request results in an HttpError.
  */
-export function toHttpTask<A>(request: Request<A>): Task<HttpError, A> {
-  return new Task((reject: Reject<HttpError>, resolve: Resolve<A>) => {
+export function toHttpResponseTask<A>(request: Request<A>): Task<HttpError, HttpSuccess<A>> {
+  return new Task((reject: Reject<HttpError>, resolve: Resolve<HttpSuccess<A>>) => {
     const xhr = new XMLHttpRequest();
 
     xhr.addEventListener('error', () => reject(networkError()));
@@ -80,6 +80,16 @@ export function toHttpTask<A>(request: Request<A>): Task<HttpError, A> {
     return xhr.abort;
   });
 }
+
+/*
+ * Converts a request object to an Http Task.
+ *
+ * A successful request will result in your decoded object.
+ *
+ * A failed request will result in an HttpError object.
+ */
+export const toHttpTask = <A>(request: Request<A>): Task<HttpError, A> =>
+  toHttpResponseTask(request).map(r => r.result);
 
 /**
  * Convenience function that will help make switch statements exhaustive

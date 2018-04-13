@@ -1,6 +1,4 @@
 import AjaxResponse from './AjaxResponse';
-import Result from 'resulty/Result';
-import { HttpError } from './HttpError';
 
 export interface HttpSuccess<A> {
   response: AjaxResponse;

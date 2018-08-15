@@ -1,15 +1,15 @@
 import { err, ok, Result } from 'resulty';
 import Task, { Reject, Resolve } from 'taskarian';
+import AjaxResponse from './AjaxResponse';
 import { Header, parseHeaders } from './Headers';
 import { badPayload, badStatus, badUrl, HttpError, networkError, timeout } from './HttpError';
-import { DecoderFn, Request } from './Request';
 import { httpSuccess, HttpSuccess } from './HttpSuccess';
-import AjaxResponse from './AjaxResponse';
+import { DecoderFn, Request } from './Request';
 
 function send(xhr: XMLHttpRequest, data: any) {
   if (data) {
     xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.send(data instanceof String ? data : JSON.stringify(data));
+    xhr.send(typeof data === 'string' ? data : JSON.stringify(data));
   } else {
     xhr.send();
   }

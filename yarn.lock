@@ -3341,9 +3341,9 @@ resolve@^1.3.2:
   dependencies:
     path-parse "^1.0.5"
 
-resulty@^2.0.1:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/resulty/-/resulty-2.0.1.tgz#950dae870e6e6231d5e19ae4101549efa2dd4aff"
+resulty@^2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/resulty/-/resulty-2.2.0.tgz#5be6b975ba36faa4cb4753bd62ffa620b1c6edce"
 
 resumer@~0.0.0:
   version "0.0.0"

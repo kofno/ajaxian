@@ -24,14 +24,14 @@
     "semantic-release": "^8.0.3",
     "tap-spec": "^4.1.1",
     "tape": "^4.6.3",
-    "ts-node": "^4.0.2",
+    "ts-node": "^8.0.2",
     "tslint": "^5.1.0",
-    "typedoc": "^0.11.0",
-    "typescript": "^2.7.0"
+    "typedoc": "^0.14.2",
+    "typescript": "^3.3.3"
   },
   "dependencies": {
     "resulty": "^2.2.0",
-    "taskarian": "^1.5.0"
+    "taskarian": "^2.0.2"
   },
   "repository": {
     "type": "git",

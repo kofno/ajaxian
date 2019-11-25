@@ -30,8 +30,8 @@
     "typescript": "^3.3.3"
   },
   "dependencies": {
-    "resulty": "^2.2.0",
-    "taskarian": "^2.0.2"
+    "resulty": "latest",
+    "taskarian": "latest"
   },
   "repository": {
     "type": "git",

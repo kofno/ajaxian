@@ -6,10 +6,8 @@ notifications:
   email: false
 node_js:
   - "node"
-before_script:
-  - export DISPLAY=:99.0
 script:
-  - xvfb-run npm run build
+  - xvfb-run -a npm run build
 after_success:
   - npm run semantic-release
 branches:

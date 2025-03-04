@@ -1,95 +1,135 @@
-import { err, ok, Result } from 'resulty';
-import Task, { Reject, Resolve } from 'taskarian';
+import { Reject, Resolve, Task } from 'taskarian';
 import AjaxResponse from './AjaxResponse';
-import { Header, parseHeaders } from './Headers';
-import { badPayload, badStatus, badUrl, HttpError, networkError, timeout } from './HttpError';
+import { Header } from './Headers';
+import {
+  badPayload,
+  badStatus,
+  HttpError,
+  networkError,
+  timeout,
+} from './HttpError';
 import { httpSuccess, HttpSuccess } from './HttpSuccess';
-import { DecoderFn, Request } from './Request';
+import { Request } from './Request';
 
-function send(xhr: XMLHttpRequest, data: any) {
-  if (data) {
-    xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.send(typeof data === 'string' ? data : JSON.stringify(data));
-  } else {
-    xhr.send();
-  }
-}
-
-const handleResponse = <A>(
-  xhr: XMLHttpRequest,
-  decoder: DecoderFn<A>,
-): Result<HttpError, HttpSuccess<A>> => {
-  const response: AjaxResponse = {
-    body: xhr.response,
-    headers: parseHeaders(xhr.getAllResponseHeaders()),
-    status: xhr.status,
-    statusText: xhr.statusText,
-  };
-
-  if (xhr.status < 200 || xhr.status >= 300) {
-    response.body = xhr.responseText;
-    return err(badStatus(response));
-  } else {
-    const result = decoder(response.body);
-    return result.cata({
-      Err: error => err(badPayload(error, response)),
-      Ok: r => ok(httpSuccess(response, r)),
-    });
-  }
-};
-
-function configureRequest<A>(xhr: XMLHttpRequest, request: Request<A>): void {
-  xhr.setRequestHeader('Accept', 'application/json');
-  request.headers.forEach((header: Header) => {
-    xhr.setRequestHeader(header.field, header.value);
+function collectHeaders(response: Response): Header[] {
+  const headers: Header[] = [];
+  response.headers.forEach((value, key) => {
+    headers.push({ field: key, value });
   });
-  xhr.withCredentials = request.withCredentials;
-  xhr.timeout = request.timeout || 0;
+  return headers;
 }
 
-/*
- * Converts a request object to an Http Task.
+function requestBody<T>(request: Request<T>): string {
+  if (
+    request.method === 'put' ||
+    request.method === 'patch' ||
+    request.method === 'post'
+  ) {
+    typeof request.data === 'string'
+      ? request.data
+      : JSON.stringify(request.data);
+  }
+  return '';
+}
+
+/**
+ * Converts a request into a Task that performs an HTTP request and returns a response.
  *
- * A successful request will result in an HttpSuccess object containing the result and also
- * the full response details (headers, status, etc.)
+ * @template A - The type of the request payload.
+ * @param {Request<A>} request - The request object containing the details of the HTTP request.
+ * @returns {Task<HttpError, HttpSuccess<A>>} A Task that performs the HTTP request and resolves with the response.
  *
- * A failed request results in an HttpError.
+ * The Task will:
+ * - Reject with a `HttpError` if the request fails due to network issues, timeout, or a bad status code.
+ * - Resolve with a `HttpSuccess<A>` if the request succeeds and the response payload is successfully decoded.
+ *
+ * The request can be aborted if it exceeds the specified timeout.
  */
-export function toHttpResponseTask<A>(request: Request<A>): Task<HttpError, HttpSuccess<A>> {
-  return new Task((reject: Reject<HttpError>, resolve: Resolve<HttpSuccess<A>>) => {
-    const xhr = new XMLHttpRequest();
+export function toHttpResponseTask<A>(
+  request: Request<A>,
+): Task<HttpError, HttpSuccess<A>> {
+  return new Task(
+    (reject: Reject<HttpError>, resolve: Resolve<HttpSuccess<A>>) => {
+      const abortController = new AbortController();
+      const signal = abortController.signal;
+      let timeoutId: Timer | null = null;
+      if (request.timeout && request.timeout > 0) {
+        timeoutId = setTimeout(() => {
+          abortController.abort();
+          reject(timeout());
+        }, request.timeout || 0);
+      }
 
-    xhr.addEventListener('error', () => reject(networkError()));
-    xhr.addEventListener('timeout', () => reject(timeout()));
-    xhr.addEventListener('load', () => {
-      return handleResponse(xhr, request.decoder).cata({
-        Err: e => reject(e),
-        Ok: d => resolve(d),
-      });
-    });
-
-    try {
-      xhr.open(request.method, request.url, true);
-    } catch (e) {
-      reject(badUrl(request.url));
-    }
-
-    configureRequest(xhr, request);
-    send(xhr, request.data);
-
-    return xhr.abort;
-  });
+      const fetchOptions: RequestInit = {
+        method: request.method,
+        body: requestBody(request),
+        headers: request.headers.reduce(
+          (acc, header) => {
+            acc[header.field] = header.value;
+            return acc;
+          },
+          {} as Record<string, string>,
+        ),
+        credentials: request.withCredentials ? 'include' : 'same-origin',
+        mode: 'cors',
+        signal,
+      };
+      fetch(request.url, fetchOptions)
+        .then(async (response) => {
+          if (timeoutId) {
+            clearTimeout(timeoutId);
+          }
+          if (!response.ok) {
+            const errorText = await response.text();
+            const parsedHeaders = collectHeaders(response);
+            const ajaxResponse: AjaxResponse = {
+              body: errorText,
+              headers: parsedHeaders,
+              status: response.status,
+              statusText: response.statusText,
+            };
+            return reject(badStatus(ajaxResponse));
+          }
+          const text = await response.text();
+          const parsedHeaders = collectHeaders(response);
+          const ajaxResponse: AjaxResponse = {
+            body: text,
+            headers: parsedHeaders,
+            status: response.status,
+            statusText: response.statusText,
+          };
+          const result = request.decoder(ajaxResponse.body);
+          result.cata({
+            Err: (error) => reject(badPayload(error, ajaxResponse)),
+            Ok: (r) => resolve(httpSuccess(ajaxResponse, r)),
+          });
+        })
+        .catch((error) => {
+          if (timeoutId) {
+            clearTimeout(timeoutId);
+          }
+          if (error.name === 'AbortError') {
+            return reject(timeout());
+          }
+          console.log('Network error', error);
+          return reject(networkError());
+        });
+      return () => {
+        abortController.abort();
+      };
+    },
+  );
 }
 
-/*
- * Converts a request object to an Http Task.
+/**
+ * Converts a given request into an HTTP task that returns the result of the request.
  *
- * A successful request will result in your decoded object.
- *
- * A failed request will result in an HttpError object.
+ * @template A - The type of the request payload.
+ * @param {Request<A>} request - The request to be converted into an HTTP task.
+ * @returns {Task<HttpError, A>} - A task that, when executed, performs the HTTP request and returns the result.
  */
 export const toHttpTask = <A>(request: Request<A>): Task<HttpError, A> =>
-  toHttpResponseTask(request).map(r => r.result);
+  toHttpResponseTask(request).map((r) => r.result);
 
 /**
  * Convenience function that will help make switch statements exhaustive
@@ -99,8 +139,12 @@ function assertNever(x: never): never {
 }
 
 /**
- * A function helper that can be chained to an error using orElse so that
- * 404s can be handled as a successful call, if desired.
+ * Returns a function that handles an `HttpError` by ignoring 404 errors and applying a given function `f` to the error.
+ * For other types of errors, it rejects the error.
+ *
+ * @template A - The type of the value returned by the function `f`.
+ * @param {function(HttpError): A} f - A function that takes an `HttpError` and returns a value of type `A`.
+ * @returns {function(HttpError): Task<HttpError, A>} A function that takes an `HttpError` and returns a `Task` that resolves with the result of `f` if the error is a 404, or rejects with the error otherwise.
  */
 export function ignore404With<A>(f: (e: HttpError) => A) {
   return (err: HttpError) =>
@@ -125,7 +169,6 @@ export function ignore404With<A>(f: (e: HttpError) => A) {
         default:
           assertNever(err);
       }
-      // tslint:disable-next-line:no-empty
       return () => {};
     });
 }

@@ -19,7 +19,7 @@ function collectHeaders(response: Response): Header[] {
   return headers;
 }
 
-function requestBody<T>(request: Request<T>): string {
+function requestBody<T>(request: Request<T>): string | null {
   if (
     request.method === 'put' ||
     request.method === 'patch' ||
@@ -29,7 +29,7 @@ function requestBody<T>(request: Request<T>): string {
       ? request.data
       : JSON.stringify(request.data);
   }
-  return '';
+  return null;
 }
 
 /**

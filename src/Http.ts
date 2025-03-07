@@ -25,11 +25,27 @@ function requestBody<T>(request: Request<T>): string | null {
     request.method === 'patch' ||
     request.method === 'post'
   ) {
-    typeof request.data === 'string'
+    return typeof request.data === 'string'
       ? request.data
       : JSON.stringify(request.data);
   }
   return null;
+}
+
+export function fetchOptions<T>(request: Request<T>): RequestInit {
+  return {
+    method: request.method,
+    body: requestBody(request),
+    headers: request.headers.reduce(
+      (acc, header) => {
+        acc[header.field] = header.value;
+        return acc;
+      },
+      {} as Record<string, string>,
+    ),
+    credentials: request.withCredentials ? 'include' : 'same-origin',
+    mode: 'cors',
+  };
 }
 
 /**
@@ -60,21 +76,8 @@ export function toHttpResponseTask<A>(
         }, request.timeout || 0);
       }
 
-      const fetchOptions: RequestInit = {
-        method: request.method,
-        body: requestBody(request),
-        headers: request.headers.reduce(
-          (acc, header) => {
-            acc[header.field] = header.value;
-            return acc;
-          },
-          {} as Record<string, string>,
-        ),
-        credentials: request.withCredentials ? 'include' : 'same-origin',
-        mode: 'cors',
-        signal,
-      };
-      fetch(request.url, fetchOptions)
+      const options = fetchOptions(request);
+      fetch(request.url, options)
         .then(async (response) => {
           if (timeoutId) {
             clearTimeout(timeoutId);

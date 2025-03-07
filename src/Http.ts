@@ -32,17 +32,22 @@ function requestBody<T>(request: Request<T>): string | null {
   return null;
 }
 
+function fetchOptionHeaders<T>(request: Request<T>): Record<string, string> {
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+    Accept: 'application/json',
+  };
+  request.headers.forEach((header) => {
+    headers[header.field] = header.value;
+  });
+  return headers;
+}
+
 export function fetchOptions<T>(request: Request<T>): RequestInit {
   return {
     method: request.method,
     body: requestBody(request),
-    headers: request.headers.reduce(
-      (acc, header) => {
-        acc[header.field] = header.value;
-        return acc;
-      },
-      {} as Record<string, string>,
-    ),
+    headers: fetchOptionHeaders(request),
     credentials: request.withCredentials ? 'include' : 'same-origin',
     mode: 'cors',
   };

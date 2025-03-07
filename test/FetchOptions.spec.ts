@@ -37,7 +37,10 @@ describe('fetchOptions', () => {
     const options = fetchOptions(aGetRequest);
     expect(options.method).toBe('get');
     expect(options.body).toBeNull();
-    expect(options.headers).toEqual({ 'Content-Type': 'application/json' });
+    expect(options.headers).toEqual({
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    });
     expect(options.credentials).toBe('same-origin');
     expect(options.mode).toBe('cors');
   });
@@ -46,7 +49,10 @@ describe('fetchOptions', () => {
     const options = fetchOptions(aPostRequest);
     expect(options.method).toBe('post');
     expect(options.body).toBe(JSON.stringify({ message: 'Hello' }));
-    expect(options.headers).toEqual({ 'Content-Type': 'application/json' });
+    expect(options.headers).toEqual({
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    });
     expect(options.credentials).toBe('same-origin');
     expect(options.mode).toBe('cors');
   });
@@ -64,7 +70,10 @@ describe('fetchOptions', () => {
     const options = fetchOptions(aPutRequest);
     expect(options.method).toBe('put');
     expect(options.body).toBe(JSON.stringify({ message: 'Hello' }));
-    expect(options.headers).toEqual({ 'Content-Type': 'application/json' });
+    expect(options.headers).toEqual({
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    });
     expect(options.credentials).toBe('same-origin');
     expect(options.mode).toBe('cors');
   });

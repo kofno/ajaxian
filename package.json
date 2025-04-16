@@ -29,7 +29,7 @@
   },
   "dependencies": {
     "resulty": "^8.0.0",
-    "taskarian": "^6.1.0"
+    "taskarian": "^7.0.1"
   },
   "repository": {
     "type": "git",
